@@ -17,6 +17,19 @@ def index(request):
 
     return render(request, "network/index.html", context)
 
+def create_post(request):
+    #Retrieve form from template; check for validity; create Post object
+    if request.method == "POST":
+        #Used for 'initial' values
+        user = request.user
+        now = datetime.datetime.now()
+
+        newPostForm = PostForm(request.POST, initial={'owner': user.id, 'likes': 0, 'timestamp': now})
+        if newPostForm.is_valid():
+            newPost = newPostForm.save()
+
+    return HttpResponseRedirect(reverse("index"))
+
 
 def login_view(request):
     if request.method == "POST":
