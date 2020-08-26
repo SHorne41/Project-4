@@ -3,12 +3,19 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+import datetime
 
 from .models import User
+from .forms import PostForm
 
 
 def index(request):
-    return render(request, "network/index.html")
+    #Create modelForm for new posts; pass to template via context
+    now = datetime.datetime.now()
+    newPostForm = PostForm(initial = {'owner': request.user, 'likes': 0, 'timestamp': now})
+    context = {'form': newPostForm}
+
+    return render(request, "network/index.html", context)
 
 
 def login_view(request):

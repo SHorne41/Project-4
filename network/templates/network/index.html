@@ -1,5 +1,14 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-    TODO
+
+{% if user.is_authenticated %}
+<div id = "newPost" style = "border: 2px solid lightgray;">
+    <form id = "createPost" action = "#" method = "POST">
+        {{ form }}
+        <button type = "submit">Post</button>
+    </form>
+</div>
+{% endif %}
+
 {% endblock %}
