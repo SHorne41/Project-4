@@ -3,13 +3,23 @@
 {% block body %}
 
 {% if user.is_authenticated %}
-<div id = "newPost" style = "border: 2px solid lightgray;">
-    <form id = "createPost" action = "{% url 'create' %}" method = "POST">
+<div id="newPost" style="border: 2px solid lightgray;">
+    <form id="createPost" action="{% url 'create' %}" method="POST">
         {% csrf_token %}
         {{ form }}
         <button type = "submit">Post</button>
     </form>
 </div>
 {% endif %}
+
+<div id="post-view">
+    {% for post in posts %}
+        <div style="border: 1px solid lightgray;">
+            <h3>{{post.owner}}</h3>
+            <h6>{{post.timestamp}}</h6>
+            <p>{{post.content}}</p>
+            <p>Likes: {{post.likes}}</p>
+        </div>
+    {% endfor %}
 
 {% endblock %}

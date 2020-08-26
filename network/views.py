@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 import datetime
 
-from .models import User
+from .models import User, Post
 from .forms import PostForm
 
 
@@ -13,7 +13,11 @@ def index(request):
     #Create modelForm for new posts; pass to template via context
     now = datetime.datetime.now()
     newPostForm = PostForm(initial = {'owner': request.user, 'likes': 0, 'timestamp': now})
-    context = {'form': newPostForm}
+
+    #Retrieve all posts to be rendered in template; order reverse chronologically; pass to template via context
+    posts = Post.objects.all()
+    posts = posts.order_by("-timestamp").all()
+    context = {'form': newPostForm, 'posts': posts}
 
     return render(request, "network/index.html", context)
 
