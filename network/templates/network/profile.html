@@ -3,6 +3,17 @@
 {% block body %}
 <div id="profile-info" style="border: 5px dotted black">
     <h1 style="text-align: center;">Welcome to {{ profile.user }}'s Profile</h1>
+    {% if request.user.is_authenticated %}
+        {% if profile.user != request.user %}
+            <form>
+                {% if isFollowing == False %}
+                    <button type="submit" style="horizontal-align: center;">Follow {{profile.user}}</button>
+                {% else %}
+                    <button type="submit" style="horizontal-align: center;">Unfollow {{profile.user}}</button>
+                {% endif %}
+            </form>
+        {% endif %}
+    {% endif %}
     <h5>Followers: {{profile.numFollowers}}</h5>
     <h5>Following: {{profile.numFollowing}}</h5>
 </div><br/><br/>

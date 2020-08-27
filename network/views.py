@@ -35,6 +35,8 @@ def create_post(request):
     return HttpResponseRedirect(reverse("index"))
 
 def profile_page(request, username):
+    isFollowing = False
+
     #Retrieve ID for requested user
     user = User.objects.get(username = username)
     userID = user.id
@@ -44,8 +46,15 @@ def profile_page(request, username):
     posts = Post.objects.filter(owner = userID)
     posts = posts.order_by("-timestamp").all()
 
+    #Is the request being made by a registered user? If so, are they following the requested user?
+    if (request.user.is_authenticated):
+        registeredUser = User.objects.get(username = request.user.username)
+        registeredUserID = registeredUser.id
+        if (Following.objects.filter(followingUser = registeredUserID, followedUser = userID).exists()):
+            isFollowing = True
+
     #Store in context and render profile page
-    context = {"profile": profile, "posts": posts}
+    context = {"profile": profile, "posts": posts, "isFollowing": isFollowing}
     return render(request, "network/profile.html", context)
 
 def login_view(request):
