@@ -1,13 +1,13 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-<div id="profile-info" style="border: 5px solid black">
+<div id="profile-info" style="border: 5px dotted black">
     <h1 style="text-align: center;">Welcome to {{ profile.user }}'s Profile</h1>
     <h5>Followers: {{profile.numFollowers}}</h5>
     <h5>Following: {{profile.numFollowing}}</h5>
 </div><br/><br/>
 
-<h2>Posts:</h2>
+<h2>Posts</h2>
 <div id="post-view">
     {% for post in posts %}
         <div style="border: 1px solid lightgray;">

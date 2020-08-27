@@ -15,7 +15,7 @@
 <div id="post-view">
     {% for post in posts %}
         <div style="border: 1px solid lightgray;">
-            <h3>{{post.owner}}</h3>
+            <a href="{% url 'profile' post.owner %}"><h3>{{post.owner}}</h3></a>
             <h6>{{post.timestamp}}</h6>
             <p>{{post.content}}</p>
             <p>Likes: {{post.likes}}</p>
