@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 import datetime
 
-from .models import User, Post
+from .models import User, Post, Profile, Following
 from .forms import PostForm
 
 
@@ -34,6 +34,19 @@ def create_post(request):
 
     return HttpResponseRedirect(reverse("index"))
 
+def profile_page(request, username):
+    #Retrieve ID for requested user
+    user = User.objects.get(username = username)
+    userID = user.id
+
+    #Retrieve profile page/posts for the requested user
+    profile = Profile.objects.get(user = userID)
+    posts = Post.objects.filter(owner = userID)
+    posts = posts.order_by("-timestamp").all()
+
+    #Store in context and render profile page
+    context = {"profile": profile, "posts": posts}
+    return render(request, "network/profile.html", context)
 
 def login_view(request):
     if request.method == "POST":
