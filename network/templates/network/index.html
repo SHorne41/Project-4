@@ -3,13 +3,15 @@
 {% block body %}
 
 {% if user.is_authenticated %}
-<div id="newPost" style="border: 2px solid lightgray;">
-    <form id="createPost" action="{% url 'create' %}" method="POST">
-        {% csrf_token %}
-        {{ form }}
-        <button type = "submit">Post</button>
-    </form>
-</div>
+    {% if title != "Following" %}
+        <div id="newPost" style="border: 2px solid lightgray;">
+            <form id="createPost" action="{% url 'create' %}" method="POST">
+                {% csrf_token %}
+                {{ form }}
+                <button type = "submit">Post</button>
+            </form>
+        </div>
+    {% endif %}
 {% endif %}
 
 <div id="post-view">

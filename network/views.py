@@ -17,7 +17,7 @@ def index(request):
     #Retrieve all posts to be rendered in template; order reverse chronologically; pass to template via context
     posts = Post.objects.all()
     posts = posts.order_by("-timestamp").all()
-    context = {'form': newPostForm, 'posts': posts}
+    context = {"form": newPostForm, "posts": posts, "title": "All Posts"}
 
     return render(request, "network/index.html", context)
 
@@ -101,6 +101,29 @@ def unfollow(request, username):
             followedUser.save()
 
     return HttpResponseRedirect(reverse("index"))
+
+def following(request):
+    #Used in context; will contain all posts
+    postIDs = []
+
+    #Retrieve all users the current user is following
+    following = Following.objects.filter(followingUser = request.user.id)
+
+    #Retrieve all postIDs for posts of each user followed
+    for user in following:
+        temp = Post.objects.filter(owner = user.followedUser)
+        for post in temp:
+            postIDs.append(post.pk)
+
+    #Retrieve all posts using postIDs
+    posts = Post.objects.filter(id__in = postIDs)
+    print(posts)
+
+
+    posts = posts.order_by("-timestamp").all()
+    context = {"posts": posts, "title": "Following"}
+
+    return render(request, "network/index.html", context)
 
 def login_view(request):
     if request.method == "POST":
