@@ -12,7 +12,7 @@
                     <button type="submit">Follow {{profile.user}}</button>
                 </form>
             {% else %}
-                <form action="{% url 'unfollow' %}" method="POST">
+                <form action="{% url 'unfollow' profile.username %}" method="POST">
                     {% csrf_token %}
                     <button type="submit">Unfollow {{profile.user}}</button>
                 </form>

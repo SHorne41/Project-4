@@ -80,6 +80,25 @@ def follow(request, username):
     return HttpResponseRedirect(reverse("index"))
 
 def unfollow(request, username):
+    #Retrieve users involved
+    followedUser = User.objects.get(username = username)
+    followingUser = User.objects.get(username = request.user.username)
+
+    #Retrive all users the followingUser is following
+    following = Following.objects.filter(followingUser = request.user.id)
+
+    #Search for user to unfollow
+    for user in following:
+        if (user.followedUser == User.objects.get(username = username)):
+            #Unfollow user
+            unfollowObject = user
+            unfollowObject.delete()
+
+            #Update followers/following for users involved
+            followingUser.numFollowing -= 1
+            followingUser.save()
+            followedUser.numFollowers -= 1
+            followedUser.save()
 
     return HttpResponseRedirect(reverse("index"))
 
