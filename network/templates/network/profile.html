@@ -2,16 +2,21 @@
 
 {% block body %}
 <div id="profile-info" style="border: 5px dotted black">
-    <h1 style="text-align: center;">Welcome to {{ profile.user }}'s Profile</h1>
+    <h1 style="text-align: center;">Welcome to {{ profile.username }}'s Profile</h1>
     {% if request.user.is_authenticated %}
-        {% if profile.user != request.user %}
-            <form>
-                {% if isFollowing == False %}
-                    <button type="submit" style="horizontal-align: center;">Follow {{profile.user}}</button>
-                {% else %}
-                    <button type="submit" style="horizontal-align: center;">Unfollow {{profile.user}}</button>
-                {% endif %}
-            </form>
+        {% if profile.username != request.user %}
+            {% if isFollowing == False %}
+                <form action="{% url 'follow' profile.username %}" method="POST">
+                    {% csrf_token %}
+                    {{form}}
+                    <button type="submit">Follow {{profile.user}}</button>
+                </form>
+            {% else %}
+                <form action="{% url 'unfollow' %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit">Unfollow {{profile.user}}</button>
+                </form>
+            {% endif %}
         {% endif %}
     {% endif %}
     <h5>Followers: {{profile.numFollowers}}</h5>

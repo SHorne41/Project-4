@@ -5,8 +5,8 @@ from django.shortcuts import render
 from django.urls import reverse
 import datetime
 
-from .models import User, Post, Profile, Following
-from .forms import PostForm
+from .models import User, Post, Following
+from .forms import PostForm, FollowForm
 
 
 def index(request):
@@ -35,16 +35,15 @@ def create_post(request):
     return HttpResponseRedirect(reverse("index"))
 
 def profile_page(request, username):
-    isFollowing = False
-
-    #Retrieve ID for requested user
+    #Retrieve requested user & their posts
     user = User.objects.get(username = username)
     userID = user.id
-
-    #Retrieve profile page/posts for the requested user
-    profile = Profile.objects.get(user = userID)
     posts = Post.objects.filter(owner = userID)
     posts = posts.order_by("-timestamp").all()
+
+    #Used for context
+    isFollowing = False
+    newFollowForm = FollowForm(initial={'followingUser': request.user.id, 'followedUser': userID})
 
     #Is the request being made by a registered user? If so, are they following the requested user?
     if (request.user.is_authenticated):
@@ -54,8 +53,35 @@ def profile_page(request, username):
             isFollowing = True
 
     #Store in context and render profile page
-    context = {"profile": profile, "posts": posts, "isFollowing": isFollowing}
+    context = {"profile": user, "posts": posts, "isFollowing": isFollowing, "form": newFollowForm}
     return render(request, "network/profile.html", context)
+
+def follow(request, username):
+    #Retrieve user/profile to be followed
+    followedUser = User.objects.get(username = username)
+    userID = followedUser.id
+
+    #Retrieve user who's following
+    followingUser = User.objects.get(username = request.user.username)
+
+    #Check for form validity. If true, create new Following object
+    if request.method == "POST":
+        newFollowForm = FollowForm(request.POST, initial={'followingUser': request.user.id, 'followedUser': userID})
+        if newFollowForm.is_valid():
+            newFollow = newFollowForm.save()
+
+            #Update followers/following for users involved
+            followingUser.numFollowing += 1
+            followingUser.save()
+            followedUser.numFollowers += 1
+            followedUser.save()
+
+
+    return HttpResponseRedirect(reverse("index"))
+
+def unfollow(request, username):
+
+    return HttpResponseRedirect(reverse("index"))
 
 def login_view(request):
     if request.method == "POST":
