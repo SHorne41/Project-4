@@ -4,7 +4,7 @@
 <div id="profile-info" style="border: 5px dotted black">
     <h1 style="text-align: center;">Welcome to {{ profile.username }}'s Profile</h1>
     {% if request.user.is_authenticated %}
-        {% if profile.username != request.user %}
+        {% if profile.username != request.user.username %}
             {% if isFollowing == False %}
                 <form action="{% url 'follow' profile.username %}" method="POST">
                     {% csrf_token %}
