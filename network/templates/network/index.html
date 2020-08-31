@@ -19,8 +19,15 @@
         <div style="border: 1px solid lightgray;">
             <a href="{% url 'profile' post.owner %}"><h3>{{post.owner}}</h3></a>
             <h6>{{post.timestamp}}</h6>
-            <p>{{post.content}}</p>
+            <p id="post-content">{{post.content}}</p>
             <p>Likes: {{post.likes}}</p>
+            {% if request.user.is_authenticated %}
+                {% if post.owner|stringformat:"s" == request.user.username|stringformat:"s" %}
+                    <button type="button" name="editPost">Edit Post</button><br/><br/>
+                {% else %}
+                    <button type="button" name="likePost">Like</button><br/><br/>
+                {% endif %}
+            {% endif %}
         </div>
     {% endfor %}
 </div>
