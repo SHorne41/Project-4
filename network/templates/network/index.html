@@ -1,4 +1,5 @@
 {% extends "network/layout.html" %}
+{% load static %}
 
 {% block body %}
 
@@ -16,20 +17,24 @@
 
 <div id="post-view">
     {% for post in posts %}
-        <div style="border: 1px solid lightgray;">
+        <div id="post" style="border: 1px solid lightgray;">
             <a href="{% url 'profile' post.owner %}"><h3>{{post.owner}}</h3></a>
             <h6>{{post.timestamp}}</h6>
             <p id="post-content">{{post.content}}</p>
             <p>Likes: {{post.likes}}</p>
             {% if request.user.is_authenticated %}
                 {% if post.owner|stringformat:"s" == request.user.username|stringformat:"s" %}
-                    <button type="button" name="editPost">Edit Post</button><br/><br/>
+                    <button type="button" class="editPost">Edit Post</button><br/><br/>
                 {% else %}
-                    <button type="button" name="likePost">Like</button><br/><br/>
+                    <button type="button" class="likePost">Like</button><br/><br/>
                 {% endif %}
             {% endif %}
         </div>
     {% endfor %}
 </div>
 
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'network/script.js' %}"></script>
 {% endblock %}
