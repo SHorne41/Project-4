@@ -1,9 +1,12 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
+from django.http import JsonResponse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 import datetime
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 from .models import User, Post, Following
 from .forms import PostForm, FollowForm
@@ -20,6 +23,28 @@ def index(request):
     context = {"form": newPostForm, "posts": posts, "title": "All Posts"}
 
     return render(request, "network/index.html", context)
+
+@csrf_exempt
+def editPost(request):
+    if request.method == "PUT":
+        #Retrieve pertinent information from request
+        data = json.loads(request.body)
+        owner = data.get("owner")
+        postContent = data.get("postContent")
+        updatedContent = data.get("updatedContent")
+
+        #Retrieve the appropriate userID
+        userID = User.objects.get(username = owner).pk
+
+        #Retrieve the post to be updated; update with new content
+        post = Post.objects.get(owner = userID, content = postContent)
+        post.content = updatedContent
+        post.save()
+
+        return JsonResponse({"message": "Post updated successfully"}, status=201)
+
+    else:
+        return JsonResponse({"error": "POST request required."}, status=400)
 
 def create_post(request):
     #Retrieve form from template; check for validity; create Post object
