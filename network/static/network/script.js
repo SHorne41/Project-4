@@ -8,11 +8,11 @@ document.addEventListener('DOMContentLoaded', function() {
     //Retrieve all "Like Post" buttons and add event listeners to them
     let likeButtons = document.getElementsByClassName('likePost');
     for (var i = 0; i < likeButtons.length; i++){
-        likeButtons[i].addEventListener('click', function() {like_post(this.parentElement)});    //this.parentElement refers to the <div> containing the entire post
+        likeButtons[i].addEventListener('click', function() {like_post(this.parentElement, true)});    //this.parentElement refers to the <div> containing the entire post
     }
 });
 
-function like_post(post){
+function like_post(post, like){
     //Retrieve all children of the post <div>
     let elements = post.children;
     console.log(elements)
@@ -21,9 +21,18 @@ function like_post(post){
     let likeCounter = elements[3].innerHTML;
     let numLikes = likeCounter.substring(7);
 
-    //Convert string representation of numLikes into integer, then increment
+    //Convert string representation of numLikes into integer
     let intLikes = parseInt(numLikes, 10);
-    intLikes += 1;
+
+    //If we're liking the post, increment. Otherwise, decrement
+    if (like == true){
+        intLikes += 1;
+        console.log("+1");
+    }
+    else{
+        intLikes -= 1;
+        console.log("-1");
+    }
 
     //Update post with new numLikes
     updatedLikeCounter = likeCounter.substring(0, 7) + intLikes;
@@ -41,7 +50,23 @@ function like_post(post){
     })
     .then (response => response.json())
     .then(result => {
-        console.log("Like count updated successfully");
+        if (like == true){
+            //Create new "Unlike" button to replace "Like" button
+            let likeButton = elements[4];
+            let unlikeButton = document.createElement('button');
+            unlikeButton.innerHTML = "Unlike";
+            unlikeButton.addEventListener('click', function() {like_post(post, false)})
+            likeButton.parentNode.replaceChild(unlikeButton, likeButton);
+        }
+        else{
+            //Create new "Like" button to replace "Unlike" button
+            let unlikeButton = elements[4];
+            let likeButton = document.createElement('button');
+            likeButton.innerHTML = "Like";
+            likeButton.addEventListener('click', function() {like_post(post, true)})
+            unlikeButton.parentNode.replaceChild(likeButton, unlikeButton);
+        }
+
     });
 
 }
