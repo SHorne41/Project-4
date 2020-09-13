@@ -29,6 +29,8 @@ function edit_post(post){
     //Create a "Save Changes" button and add it to the DOM
     let saveChanges = document.createElement('button');
     saveChanges.innerHTML = "Save";
+
+    //Update the post in the database once the user clicks the "Save Changes" button
     saveChanges.addEventListener('click', function () {
         fetch('/editPost', {
             method: 'PUT',
