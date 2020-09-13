@@ -1,16 +1,39 @@
 document.addEventListener('DOMContentLoaded', function() {
-    let buttons = document.getElementsByClassName('editPost');
-    for (var i = 0; i < buttons.length; i++){
-        buttons[i].addEventListener('click', function() {edit_post(this.parentElement)});    //this.parentElement refers to the <div> containing the entire post
+    //Retrieve all "Edit Post" buttons and add event listeners to them
+    let editButtons = document.getElementsByClassName('editPost');
+    for (var i = 0; i < editButtons.length; i++){
+        editButtons[i].addEventListener('click', function() {edit_post(this.parentElement)});    //this.parentElement refers to the <div> containing the entire post
+    }
+
+    //Retrieve all "Like Post" buttons and add event listeners to them
+    let likeButtons = document.getElementsByClassName('likePost');
+    for (var i = 0; i < likeButtons.length; i++){
+        likeButtons[i].addEventListener('click', function() {like_post(this.parentElement)});    //this.parentElement refers to the <div> containing the entire post
     }
 });
 
-function edit_post(post){
-
+function like_post(post){
     //Retrieve all children of the post <div>
     let elements = post.children;
-    console.log(elements[0].innerHTML.length);
-    console.log(elements[0].innerHTML.substring(4, (elements[0].innerHTML.length - 5)));
+    console.log(elements)
+
+    //Retrieve the <p> element displaying the number of likes
+    let likeCounter = elements[3].innerHTML;
+    let numLikes = likeCounter.substring(7);
+
+    //Convert string representation of numLikes into integer, then increment
+    let intLikes = parseInt(numLikes, 10);
+    intLikes += 1;
+
+    //Update post with new numLikes
+    updatedLikeCounter = likeCounter.substring(0, 7) + intLikes;
+    elements[3].innerHTML = updatedLikeCounter;
+
+}
+
+function edit_post(post){
+    //Retrieve all children of the post <div>
+    let elements = post.children;
 
     //Retrieve the <p> element containing the post content
     let postContent = elements[2].innerHTML;
