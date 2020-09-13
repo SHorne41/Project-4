@@ -25,6 +25,28 @@ def index(request):
     return render(request, "network/index.html", context)
 
 @csrf_exempt
+def updateLikes(request):
+    if request.method == "PUT":
+        #Retrieve pertinent information from request
+        data = json.loads(request.body)
+        owner = data.get("owner")
+        postContent = data.get("postContent")
+        newLikeCount = data.get("newLikeCount")
+
+        #Retrieve the appropriate userID
+        userID = User.objects.get(username = owner).pk
+
+        #Retrieve the post to be updated; update with new content
+        post = Post.objects.get(owner = userID, content = postContent)
+        post.likes = newLikeCount
+        post.save()
+
+        return JsonResponse({"message": "Post updated successfully"}, status=201)
+
+    else:
+        return JsonResponse({"error": "POST request required."}, status=400)
+
+@csrf_exempt
 def editPost(request):
     if request.method == "PUT":
         #Retrieve pertinent information from request

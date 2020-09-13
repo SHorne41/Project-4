@@ -29,6 +29,21 @@ function like_post(post){
     updatedLikeCounter = likeCounter.substring(0, 7) + intLikes;
     elements[3].innerHTML = updatedLikeCounter;
 
+    //Make request to server to updated number of likes
+    let postContent = elements[2].innerHTML;        //Used to retrieve appropriate post from database
+    fetch('/updateLikes', {
+        method: 'PUT',
+        body: JSON.stringify({
+            owner: elements[0].innerHTML.substring(4, (elements[0].innerHTML.length - 5)),
+            postContent: postContent,
+            newLikeCount: intLikes,
+        })
+    })
+    .then (response => response.json())
+    .then(result => {
+        console.log("Like count updated successfully");
+    });
+
 }
 
 function edit_post(post){
