@@ -25,7 +25,7 @@ def index(request):
     #Create pagination object for posts
     paginator = Paginator(posts, 10)                    #Display 10 posts per page
     page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)         
+    page_obj = paginator.get_page(page_number)
     context = {"form": newPostForm, "title": "All Posts", 'page_obj': page_obj}
 
     return render(request, "network/index.html", context)
@@ -168,13 +168,15 @@ def following(request):
         for post in temp:
             postIDs.append(post.pk)
 
-    #Retrieve all posts using postIDs
+    #Retrieve all posts using postIDs; sort based on timestamp
     posts = Post.objects.filter(id__in = postIDs)
-    print(posts)
-
-
     posts = posts.order_by("-timestamp").all()
-    context = {"posts": posts, "title": "Following"}
+
+    #Create pagination object for posts
+    paginator = Paginator(posts, 10)                    #Display 10 posts per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    context = {"title": "Following", 'page_obj': page_obj}
 
     return render(request, "network/index.html", context)
 
