@@ -1,12 +1,13 @@
 from django.contrib.auth import authenticate, login, logout
+from django.core.paginator import Paginator
 from django.db import IntegrityError
 from django.http import JsonResponse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-import datetime
 from django.views.decorators.csrf import csrf_exempt
 import json
+import datetime
 
 from .models import User, Post, Following
 from .forms import PostForm, FollowForm
@@ -17,10 +18,15 @@ def index(request):
     now = datetime.datetime.now()
     newPostForm = PostForm(initial = {'owner': request.user, 'likes': 0, 'timestamp': now})
 
-    #Retrieve all posts to be rendered in template; order reverse chronologically; pass to template via context
+    #Retrieve all posts to be rendered in template; order reverse chronologically
     posts = Post.objects.all()
     posts = posts.order_by("-timestamp").all()
-    context = {"form": newPostForm, "posts": posts, "title": "All Posts"}
+
+    #Create pagination object for posts
+    paginator = Paginator(posts, 10)        #Display 10 posts per page
+    #page_number = request.GET.get('page')  #Remove comment when yuo figure out how page_number works
+    page_obj = paginator.get_page(1)        #Replace 1 with page_number
+    context = {"form": newPostForm, "title": "All Posts", 'page_obj': page_obj}
 
     return render(request, "network/index.html", context)
 
