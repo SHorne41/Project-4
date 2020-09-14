@@ -10,6 +10,9 @@ class PostForm(forms.ModelForm):
             'likes': forms.HiddenInput(),
             'timestamp': forms.HiddenInput()
         }
+        labels = {
+            'content': 'Say something'
+        }
 
 class FollowForm(forms.ModelForm):
     class Meta:
