@@ -23,9 +23,9 @@ def index(request):
     posts = posts.order_by("-timestamp").all()
 
     #Create pagination object for posts
-    paginator = Paginator(posts, 10)        #Display 10 posts per page
-    #page_number = request.GET.get('page')  #Remove comment when yuo figure out how page_number works
-    page_obj = paginator.get_page(1)        #Replace 1 with page_number
+    paginator = Paginator(posts, 10)                    #Display 10 posts per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)         
     context = {"form": newPostForm, "title": "All Posts", 'page_obj': page_obj}
 
     return render(request, "network/index.html", context)
